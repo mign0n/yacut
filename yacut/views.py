@@ -1,7 +1,7 @@
 from random import choices
 from string import ascii_letters, digits
 
-from flask import flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for
 
 from yacut import app, db
 from yacut.forms import URLMapForm
@@ -48,5 +48,7 @@ def index_view():
 
 @app.route('/<short_id>')
 def short_url_view(short_id):
-    original_url = URLMap.query.filter_by(short=short_id).first()
-    return redirect(original_url.original)
+    url_map = URLMap.query.filter_by(short=short_id).first()
+    if url_map is not None:
+        return redirect(url_map.original)
+    abort(404)
