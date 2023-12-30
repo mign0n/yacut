@@ -7,6 +7,12 @@ from string import ascii_letters, digits
 from yacut import app, db
 from yacut.errors_handlers import InvalidAPIUsage
 
+ID_NOT_FOUND = 'Указанный id не найден'
+INVALID_SHORT_LINK_NAME = 'Указано недопустимое имя для короткой ссылки'
+IS_A_REQUIRED_FIELD = '"url" является обязательным полем!'
+NO_REQUEST_BODY = 'Отсутствует тело запроса'
+SHORT_LINK_IS_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
+
 
 class URLMap(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -25,24 +31,19 @@ class URLMap(db.Model):
 
     def validate(self, data):
         if data is None:
-            raise InvalidAPIUsage('Отсутствует тело запроса')
+            raise InvalidAPIUsage(NO_REQUEST_BODY)
         original_url = data.get('url')
         custom_id = data.get('custom_id')
         if not original_url:
-            raise InvalidAPIUsage('"url" является обязательным полем!')
+            raise InvalidAPIUsage(IS_A_REQUIRED_FIELD)
         if custom_id:
-            if len(custom_id) > app.config['SHORT_ID_MAX_SIZE']:
-                raise InvalidAPIUsage(
-                    'Указано недопустимое имя для короткой ссылки'
-                )
-            if re.fullmatch(r'[0-9a-zA-Z]+', custom_id) is None:
-                raise InvalidAPIUsage(
-                    'Указано недопустимое имя для короткой ссылки'
-                )
+            if (
+                len(custom_id) > app.config['SHORT_ID_MAX_SIZE']
+                or re.fullmatch(r'[0-9a-zA-Z]+', custom_id) is None
+            ):
+                raise InvalidAPIUsage(INVALID_SHORT_LINK_NAME)
             if self.is_exists(short=custom_id):
-                raise InvalidAPIUsage(
-                    'Предложенный вариант короткой ссылки уже существует.'
-                )
+                raise InvalidAPIUsage(SHORT_LINK_IS_EXISTS)
         else:
             data['custom_id'] = self.get_unique_short_id()
 
@@ -62,4 +63,4 @@ class URLMap(db.Model):
         url_map = self.query.filter_by(short=short_id).first()
         if url_map is not None:
             return url_map
-        raise InvalidAPIUsage('Указанный id не найден', HTTPStatus.NOT_FOUND)
+        raise InvalidAPIUsage(ID_NOT_FOUND, HTTPStatus.NOT_FOUND)
