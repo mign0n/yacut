@@ -1,44 +1,41 @@
-from http import HTTPStatus
-
 from flask import abort, flash, redirect, render_template, url_for
 
-from yacut import app, db
+from yacut import app
+from yacut.errors_handlers import InvalidAPIUsage
 from yacut.forms import URLMapForm
 from yacut.models import URLMap
-from yacut.utils import get_unique_short_id, is_exists
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index_view():
     form = URLMapForm()
-    if form.validate_on_submit():
-        custom_id = form.custom_id.data
-        if custom_id and is_exists(custom_id):
-            flash('Предложенный вариант короткой ссылки уже существует.')
-            return render_template('index.html', form=form)
-        short_id = custom_id if custom_id else get_unique_short_id()
-        db.session.add(
-            URLMap(
-                original=form.original_link.data,
-                short=short_id,
-            )
-        )
-        db.session.commit()
+    if not form.validate_on_submit():
+        return render_template('index.html', form=form)
+    try:
         return render_template(
             'index.html',
             form=form,
             short_url=url_for(
                 'short_url_view',
                 _external=True,
-                short_id=short_id,
+                short_id=URLMap()
+                .create(
+                    dict(
+                        url=form.original_link.data,
+                        custom_id=form.custom_id.data,
+                    )
+                )
+                .short,
             ),
         )
+    except InvalidAPIUsage as error:
+        flash(error.message)
     return render_template('index.html', form=form)
 
 
 @app.route('/<short_id>')
 def short_url_view(short_id):
-    url_map = URLMap.query.filter_by(short=short_id).first()
-    if url_map is not None:
-        return redirect(url_map.original)
-    abort(HTTPStatus.NOT_FOUND)
+    try:
+        return redirect(URLMap().get(short_id).original)
+    except InvalidAPIUsage as error:
+        abort(error.status_code)
