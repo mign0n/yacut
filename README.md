@@ -1,37 +1,84 @@
-Клонировать репозиторий и перейти в него в командной строке:
+# YaCut
 
-```
-git clone 
-```
+## Описание
 
-```
-cd yacut
-```
+Сервис для укорачивания URL-адресов.
 
-Cоздать и активировать виртуальное окружение:
+## Технологии
 
-```
-python3 -m venv venv
-```
+- [Python v3.9](https://docs.python.org/3.9/)
+- [Flask v2.0](https://flask.palletsprojects.com/en/2.0.x/)
+- [SQLAlchemy v1.4](https://docs.sqlalchemy.org/en/14/)
 
-* Если у вас Linux/macOS
+## Запуск проекта на Linux
 
-    ```
-    source venv/bin/activate
-    ```
+- Склонируйте репозиторий и перейдите в директорию проекта
 
-* Если у вас windows
-
-    ```
-    source venv/scripts/activate
-    ```
-
-Установить зависимости из файла requirements.txt:
-
-```
-python3 -m pip install --upgrade pip
+```shell
+git clone https://github.com/mign0n/yacut.git && cd yacut
 ```
 
+- Установите и активируйте виртуальное окружение
+
+```shell
+python -m venv venv && source venv/bin/activate
 ```
+
+- Установите зависимости из файла requirements.txt
+
+```shell
 pip install -r requirements.txt
 ```
+
+- Создайте `.env` файл (при необходимости отредактируйте его)
+
+```shell
+cp .env.example .env
+```
+
+- Запустите тесты
+
+```shell
+pytest
+```
+
+- Запустите веб-сервер и перейдите по адресу http://127.0.0.1:5000/
+
+```shell
+flask run
+```
+
+## API
+
+API имеет два эндпоинта:
+
+1. POST /api/id/ - для создания короткой ссылки
+
+    ```shell
+    curl --header "content-type:application/json" \
+    --data '{"url": "http://example.com/"}' \
+    --request POST http://127.0.0.1:5000/api/id/
+    ```
+    ```text
+    {
+      "short_link": "http://127.0.0.1:5000/o8yjhi",
+      "url": "http://example.com/"
+    }
+    ```
+
+2. GET /api/id/{short_id}/ - для получения оригинальной ссылки по короткой
+
+    ```shell
+    curl --header "content-type:application/json" \
+    --request GET http://127.0.0.1:5000/api/id/o8yjhi/
+    ```
+    ```text
+    {
+      "url": "http://example.com/"
+    }
+    ```
+
+## Авторы
+
+- [Олег Сапожников](https://github.com/mign0n)
+- [yandex-praktikum](https://github.com/yandex-praktikum)
