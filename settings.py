@@ -1,5 +1,7 @@
 import os
 
+from string import ascii_letters, digits
+
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///db.sqlite3')
@@ -8,6 +10,7 @@ class Config:
 
     DEFAULT_SHORT_ID_SIZE = 6
     ORIGINAL_LINK_MAX_SIZE = 256
+    SHORT_ID_CHARACTERS = ascii_letters + digits
     SHORT_ID_MAX_SIZE = 16
 
     MAX_ITERATION = 100000

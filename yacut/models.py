@@ -2,7 +2,6 @@ import re
 from datetime import datetime
 from http import HTTPStatus
 from random import choices
-from string import ascii_letters, digits
 
 from yacut import app, db
 from yacut.errors_handlers import InvalidAPIUsage
@@ -27,11 +26,12 @@ class URLMap(db.Model):
         self,
         size=app.config['DEFAULT_SHORT_ID_SIZE'],
         max_iteration=app.config['MAX_ITERATION'],
+        characters=app.config['SHORT_ID_CHARACTERS'],
     ):
         iteration = 0
-        short_id = ''.join(choices(ascii_letters + digits, k=size))
+        short_id = ''.join(choices(characters, k=size))
         while self.is_exists(short=short_id) or iteration > max_iteration:
-            short_id = ''.join(choices(ascii_letters + digits, k=size))
+            short_id = ''.join(choices(characters, k=size))
             iteration += 1
         return short_id
 
