@@ -45,7 +45,8 @@ class URLMap(db.Model):
         if custom_id:
             if (
                 len(custom_id) > app.config['SHORT_ID_MAX_SIZE']
-                or re.fullmatch(r'[0-9a-zA-Z]+', custom_id) is None
+                or re.fullmatch(app.config['SHORT_ID_PATTERN'], custom_id)
+                is None
             ):
                 raise InvalidAPIUsage(INVALID_SHORT_LINK_NAME)
             if self.is_exists(short=custom_id):

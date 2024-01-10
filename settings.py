@@ -12,6 +12,7 @@ class Config:
     ORIGINAL_LINK_MAX_SIZE = 256
     SHORT_ID_CHARACTERS = ascii_letters + digits
     SHORT_ID_MAX_SIZE = 16
+    SHORT_ID_PATTERN = r'[{}]+'.format(SHORT_ID_CHARACTERS)
 
     MAX_ITERATION = 100000
 
