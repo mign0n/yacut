@@ -9,3 +9,5 @@ class Config:
     DEFAULT_SHORT_ID_SIZE = 6
     ORIGINAL_LINK_MAX_SIZE = 256
     SHORT_ID_MAX_SIZE = 16
+
+    SHORT_URL_VIEW = 'short_url_view'

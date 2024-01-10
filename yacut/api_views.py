@@ -14,7 +14,7 @@ def create_short_link():
             {
                 'url': url_map.original,
                 'short_link': url_for(
-                    'short_url_view',
+                    app.config['SHORT_URL_VIEW'],
                     _external=True,
                     short_id=url_map.short,
                 ),

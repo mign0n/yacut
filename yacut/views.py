@@ -16,7 +16,7 @@ def index_view():
             'index.html',
             form=form,
             short_url=url_for(
-                'short_url_view',
+                app.config['SHORT_URL_VIEW'],
                 _external=True,
                 short_id=URLMap()
                 .create(
