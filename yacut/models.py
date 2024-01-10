@@ -23,10 +23,16 @@ class URLMap(db.Model):
     def is_exists(self, **kwargs):
         return self.query.filter_by(**kwargs).first() is not None
 
-    def get_unique_short_id(self, size=app.config['DEFAULT_SHORT_ID_SIZE']):
+    def get_unique_short_id(
+        self,
+        size=app.config['DEFAULT_SHORT_ID_SIZE'],
+        max_iteration=app.config['MAX_ITERATION'],
+    ):
+        iteration = 0
         short_id = ''.join(choices(ascii_letters + digits, k=size))
-        if self.is_exists(short=short_id):
-            return self.get_unique_short_id()
+        while self.is_exists(short=short_id) or iteration > max_iteration:
+            short_id = ''.join(choices(ascii_letters + digits, k=size))
+            iteration += 1
         return short_id
 
     def validate(self, data):

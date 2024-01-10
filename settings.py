@@ -10,4 +10,6 @@ class Config:
     ORIGINAL_LINK_MAX_SIZE = 256
     SHORT_ID_MAX_SIZE = 16
 
+    MAX_ITERATION = 100000
+
     SHORT_URL_VIEW = 'short_url_view'
