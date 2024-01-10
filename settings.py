@@ -9,7 +9,7 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'SUP$R-SECR3T-KEY')
 
     DEFAULT_SHORT_ID_SIZE = 6
-    ORIGINAL_LINK_MAX_SIZE = 256
+    ORIGINAL_LINK_MAX_SIZE = 1000
     SHORT_ID_CHARACTERS = ascii_letters + digits
     SHORT_ID_MAX_SIZE = 16
     SHORT_ID_PATTERN = r'[{}]+'.format(SHORT_ID_CHARACTERS)
