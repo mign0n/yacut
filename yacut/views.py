@@ -18,14 +18,10 @@ def index_view():
             short_url=url_for(
                 app.config['SHORT_URL_VIEW'],
                 _external=True,
-                short_id=URLMap()
-                .create(
-                    dict(
-                        url=form.original_link.data,
-                        custom_id=form.custom_id.data,
-                    )
-                )
-                .short,
+                short_id=URLMap.create(
+                    form.original_link.data,
+                    form.custom_id.data,
+                ).short,
             ),
         )
     except InvalidAPIUsage as error:
