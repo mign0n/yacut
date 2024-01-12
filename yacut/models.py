@@ -4,11 +4,12 @@ from http import HTTPStatus
 from random import choices
 
 from yacut import app, db
-from yacut.errors_handlers import InvalidAPIUsage
+from yacut.errors_handlers import InvalidAPIUsage, GenerationError
 
 ID_NOT_FOUND = 'Указанный id не найден'
 INVALID_SHORT_LINK_NAME = 'Указано недопустимое имя для короткой ссылки'
 IS_A_REQUIRED_FIELD = '"url" является обязательным полем!'
+SHORT_LINK_GENERATION_ERROR = 'Ошибка генерации короткой ссылки.'
 SHORT_LINK_IS_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
 
 
@@ -28,12 +29,11 @@ class URLMap(db.Model):
         max_iteration=app.config['MAX_ITERATION'],
         characters=app.config['SHORT_ID_CHARACTERS'],
     ):
-        iteration = 0
-        short_id = ''.join(choices(characters, k=size))
-        while URLMap.is_exists() or iteration > max_iteration:
+        for _ in range(max_iteration):
             short_id = ''.join(choices(characters, k=size))
-            iteration += 1
-        return short_id
+            if not URLMap.is_exists(short=short_id):
+                return short_id
+        raise GenerationError(SHORT_LINK_GENERATION_ERROR)
 
     @staticmethod
     def create(original_url, short_id=None):
