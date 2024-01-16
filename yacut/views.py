@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from flask import abort, flash, redirect, render_template, url_for
 
 from yacut import app
@@ -11,6 +13,9 @@ def index_view():
     form = URLMapForm()
     if not form.validate_on_submit():
         return render_template('index.html', form=form)
+    short_id = form.custom_id.data
+    if not short_id:
+        short_id = URLMap.get_unique_short_id()
     try:
         return render_template(
             'index.html',
@@ -20,7 +25,7 @@ def index_view():
                 _external=True,
                 short_id=URLMap.create(
                     form.original_link.data,
-                    form.custom_id.data,
+                    short_id,
                 ).short,
             ),
         )
@@ -32,6 +37,6 @@ def index_view():
 @app.route('/<short_id>')
 def short_url_view(short_id):
     try:
-        return redirect(URLMap().get(short_id).original)
-    except InvalidAPIUsage as error:
-        abort(error.status_code)
+        return redirect(URLMap.get(short_id).original)
+    except AttributeError:
+        abort(HTTPStatus.NOT_FOUND)
