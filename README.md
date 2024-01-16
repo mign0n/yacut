@@ -36,10 +36,10 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-- Запустите тесты
+- Создайте базу данных
 
 ```shell
-pytest
+echo "from yacut import db; db.create_all()" | flask shell >/dev/null 2>&1
 ```
 
 - Запустите веб-сервер и перейдите по адресу http://127.0.0.1:5000/
