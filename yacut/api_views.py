@@ -4,6 +4,7 @@ from http import HTTPStatus
 from flask import jsonify, request, url_for
 from sqlalchemy.exc import SQLAlchemyError
 
+from settings import SHORT_URL_VIEW
 from yacut import app
 from yacut.errors_handlers import InvalidAPIUsage
 from yacut.models import URLMap
@@ -45,7 +46,7 @@ def create_short_link():
             {
                 'url': url_map.original,
                 'short_link': url_for(
-                    app.config['SHORT_URL_VIEW'],
+                    SHORT_URL_VIEW,
                     _external=True,
                     short_id=url_map.short,
                 ),

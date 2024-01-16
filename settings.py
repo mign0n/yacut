@@ -2,6 +2,8 @@ import os
 
 from string import ascii_letters, digits
 
+SHORT_URL_VIEW = 'short_url_view'
+
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///db.sqlite3')
@@ -9,11 +11,9 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'SUP$R-SECR3T-KEY')
 
     DEFAULT_SHORT_ID_SIZE = 6
-    ORIGINAL_LINK_MAX_SIZE = 1000
+    ORIGINAL_LINK_MAX_SIZE = 1000000
     SHORT_ID_CHARACTERS = ascii_letters + digits
     SHORT_ID_MAX_SIZE = 16
     SHORT_ID_PATTERN = r'[{}]+'.format(SHORT_ID_CHARACTERS)
 
-    MAX_ITERATION = 100000
-
-    SHORT_URL_VIEW = 'short_url_view'
+    MAX_ITERATION = 10

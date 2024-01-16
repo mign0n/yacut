@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 from flask import abort, flash, redirect, render_template, url_for
 
+from settings import SHORT_URL_VIEW
 from yacut import app
 from yacut.errors_handlers import InvalidAPIUsage
 from yacut.forms import URLMapForm
@@ -21,7 +22,7 @@ def index_view():
             'index.html',
             form=form,
             short_url=url_for(
-                app.config['SHORT_URL_VIEW'],
+                SHORT_URL_VIEW,
                 _external=True,
                 short_id=URLMap.create(
                     form.original_link.data,
