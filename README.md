@@ -39,7 +39,7 @@ cp .env.example .env
 - Создайте базу данных
 
 ```shell
-echo "from yacut import db; db.create_all()" | flask shell >/dev/null 2>&1
+flask db upgrade
 ```
 
 - Запустите веб-сервер и перейдите по адресу http://127.0.0.1:5000/
