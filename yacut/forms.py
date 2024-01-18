@@ -2,8 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import SubmitField, URLField, ValidationError, validators
 
 from yacut import app
-from yacut.api_views import SHORT_LINK_IS_EXISTS
-from yacut.models import URLMap
+from yacut.models import SHORT_LINK_IS_EXISTS, URLMap
 
 CREATE = 'Создать'
 CUSTOM_SHORT_LINK = 'Ваш вариант короткой ссылки'
