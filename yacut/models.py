@@ -8,8 +8,10 @@ from yacut import app, db
 from yacut.errors_handlers import GenerationError
 
 INVALID_SHORT_LINK_NAME = 'Указано недопустимое имя для короткой ссылки'
+INVALID_URL = 'Недействительный URL.'
 SHORT_LINK_GENERATION_ERROR = 'Ошибка генерации короткой ссылки.'
 SHORT_LINK_IS_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
+URL_TOO_LONG = 'Длина URL не должна превышать {} символов.'
 
 
 class URLMap(db.Model):
@@ -32,6 +34,15 @@ class URLMap(db.Model):
 
     @staticmethod
     def create(original_url, short_id):
+        if (
+            re.fullmatch(app.config['ORIGINAL_LINK_PATTERN'], original_url)
+            is None
+        ):
+            raise ValidationError(INVALID_URL)
+        if len(original_url) > app.config['ORIGINAL_LINK_MAX_SIZE']:
+            raise ValidationError(
+                URL_TOO_LONG.format(app.config['ORIGINAL_LINK_MAX_SIZE'])
+            )
         if short_id:
             if (
                 len(short_id) > app.config['SHORT_ID_MAX_SIZE']
