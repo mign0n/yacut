@@ -4,6 +4,11 @@ from random import choices
 
 from wtforms import ValidationError
 
+from settings import (
+    ORIGINAL_LINK_PATTERN,
+    SHORT_ID_CHARACTERS,
+    SHORT_ID_PATTERN,
+)
 from yacut import app, db
 from yacut.errors_handlers import GenerationError
 
@@ -24,7 +29,7 @@ class URLMap(db.Model):
     def get_unique_short_id(
         size=app.config['DEFAULT_SHORT_ID_SIZE'],
         max_iteration=app.config['MAX_ITERATION'],
-        characters=app.config['SHORT_ID_CHARACTERS'],
+        characters=SHORT_ID_CHARACTERS,
     ):
         for _ in range(max_iteration):
             short = ''.join(choices(characters, k=size))
@@ -34,10 +39,7 @@ class URLMap(db.Model):
 
     @staticmethod
     def create(original_url, short):
-        if (
-            re.fullmatch(app.config['ORIGINAL_LINK_PATTERN'], original_url)
-            is None
-        ):
+        if re.fullmatch(ORIGINAL_LINK_PATTERN, original_url) is None:
             raise ValidationError(INVALID_URL)
         if len(original_url) > app.config['ORIGINAL_LINK_MAX_SIZE']:
             raise ValidationError(
@@ -46,8 +48,7 @@ class URLMap(db.Model):
         if short:
             if (
                 len(short) > app.config['SHORT_ID_MAX_SIZE']
-                or re.fullmatch(app.config['SHORT_ID_PATTERN'], short)
-                is None
+                or re.fullmatch(SHORT_ID_PATTERN, short) is None
             ):
                 raise ValidationError(INVALID_SHORT_LINK_NAME)
             if URLMap.get(short) is not None:

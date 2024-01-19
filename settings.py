@@ -2,6 +2,15 @@ import os
 
 from string import ascii_letters, digits
 
+ORIGINAL_LINK_PATTERN = (
+    r'^[a-z]+://'
+    r'(?P<host>[^\/\?:]+)'
+    r'(?P<port>:[0-9]+)?'
+    r'(?P<path>\/.*?)?'
+    r'(?P<query>\?.*)?$'
+)
+SHORT_ID_CHARACTERS = ascii_letters + digits
+SHORT_ID_PATTERN = r'[{}]+'.format(SHORT_ID_CHARACTERS)
 SHORT_URL_VIEW = 'short_url_view'
 
 
@@ -12,15 +21,6 @@ class Config:
 
     DEFAULT_SHORT_ID_SIZE = 6
     ORIGINAL_LINK_MAX_SIZE = 2000
-    ORIGINAL_LINK_PATTERN = (
-        r'^[a-z]+://'
-        r'(?P<host>[^\/\?:]+)'
-        r'(?P<port>:[0-9]+)?'
-        r'(?P<path>\/.*?)?'
-        r'(?P<query>\?.*)?$'
-    )
-    SHORT_ID_CHARACTERS = ascii_letters + digits
     SHORT_ID_MAX_SIZE = 16
-    SHORT_ID_PATTERN = r'[{}]+'.format(SHORT_ID_CHARACTERS)
 
     MAX_ITERATION = 10

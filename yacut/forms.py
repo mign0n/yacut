@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, URLField, ValidationError, validators
 
+from settings import SHORT_ID_PATTERN
 from yacut import app
 from yacut.models import SHORT_LINK_IS_EXISTS, URLMap
 
@@ -31,7 +32,7 @@ class URLMapForm(FlaskForm):
             validators.Length(max=app.config['SHORT_ID_MAX_SIZE']),
             validators.Optional(),
             validators.Regexp(
-                app.config['SHORT_ID_PATTERN'],
+                SHORT_ID_PATTERN,
                 message=INVALID_SHORT_LINK_NAME,
             ),
             validate_unique,
