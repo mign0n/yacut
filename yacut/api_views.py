@@ -26,11 +26,9 @@ def create_short_link():
     try:
         url_map = URLMap.create(original_url, short_id)
     except ValidationError as error:
-        message, *_ = error.args
-        raise InvalidAPIUsage(message)
+        raise InvalidAPIUsage(str(error))
     except GenerationError as error:
-        message, *_ = error.args
-        raise InvalidAPIUsage(message, HTTPStatus.INTERNAL_SERVER_ERROR)
+        raise InvalidAPIUsage(str(error), HTTPStatus.INTERNAL_SERVER_ERROR)
     return (
         jsonify(
             {

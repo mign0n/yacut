@@ -29,11 +29,9 @@ def index_view():
             ),
         )
     except ValidationError as error:
-        message, *_ = error.args
-        flash(message)
+        flash(str(error))
     except GenerationError as error:
-        message, *_ = error.args
-        raise InvalidAPIUsage(message, HTTPStatus.INTERNAL_SERVER_ERROR)
+        raise InvalidAPIUsage(str(error), HTTPStatus.INTERNAL_SERVER_ERROR)
     return render_template('index.html', form=form)
 
 
