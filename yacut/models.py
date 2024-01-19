@@ -27,13 +27,13 @@ class URLMap(db.Model):
         characters=app.config['SHORT_ID_CHARACTERS'],
     ):
         for _ in range(max_iteration):
-            short_id = ''.join(choices(characters, k=size))
-            if URLMap.get(short_id) is None:
-                return short_id
+            short = ''.join(choices(characters, k=size))
+            if URLMap.get(short) is None:
+                return short
         raise GenerationError(SHORT_LINK_GENERATION_ERROR)
 
     @staticmethod
-    def create(original_url, short_id):
+    def create(original_url, short):
         if (
             re.fullmatch(app.config['ORIGINAL_LINK_PATTERN'], original_url)
             is None
@@ -43,22 +43,22 @@ class URLMap(db.Model):
             raise ValidationError(
                 URL_TOO_LONG.format(app.config['ORIGINAL_LINK_MAX_SIZE'])
             )
-        if short_id:
+        if short:
             if (
-                len(short_id) > app.config['SHORT_ID_MAX_SIZE']
-                or re.fullmatch(app.config['SHORT_ID_PATTERN'], short_id)
+                len(short) > app.config['SHORT_ID_MAX_SIZE']
+                or re.fullmatch(app.config['SHORT_ID_PATTERN'], short)
                 is None
             ):
                 raise ValidationError(INVALID_SHORT_LINK_NAME)
-            if URLMap.get(short_id) is not None:
+            if URLMap.get(short) is not None:
                 raise ValidationError(SHORT_LINK_IS_EXISTS)
         else:
-            short_id = URLMap.get_unique_short_id()
-        url_map = URLMap(original=original_url, short=short_id)
+            short = URLMap.get_unique_short_id()
+        url_map = URLMap(original=original_url, short=short)
         db.session.add(url_map)
         db.session.commit()
         return url_map
 
     @staticmethod
-    def get(short_id):
-        return URLMap.query.filter_by(short=short_id).first()
+    def get(short):
+        return URLMap.query.filter_by(short=short).first()

@@ -21,10 +21,10 @@ def create_short_link():
     original_url = data.get('url')
     if not original_url:
         raise InvalidAPIUsage(IS_A_REQUIRED_FIELD)
-    short_id = data.get('custom_id')
+    short = data.get('custom_id')
 
     try:
-        url_map = URLMap.create(original_url, short_id)
+        url_map = URLMap.create(original_url, short)
     except ValidationError as error:
         raise InvalidAPIUsage(str(error))
     except GenerationError as error:
@@ -36,7 +36,7 @@ def create_short_link():
                 'short_link': url_for(
                     SHORT_URL_VIEW,
                     _external=True,
-                    short_id=url_map.short,
+                    short=url_map.short,
                 ),
             }
         ),
@@ -44,9 +44,9 @@ def create_short_link():
     )
 
 
-@app.route('/api/id/<short_id>/', methods=['GET'])
-def get_short_link(short_id):
-    url_map = URLMap.get(short_id)
+@app.route('/api/id/<short>/', methods=['GET'])
+def get_short_link(short):
+    url_map = URLMap.get(short)
     if url_map is None:
         raise InvalidAPIUsage(ID_NOT_FOUND, HTTPStatus.NOT_FOUND)
     return jsonify({'url': url_map.original})

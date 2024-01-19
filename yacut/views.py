@@ -22,7 +22,7 @@ def index_view():
             short_url=url_for(
                 SHORT_URL_VIEW,
                 _external=True,
-                short_id=URLMap.create(
+                short=URLMap.create(
                     form.original_link.data,
                     form.custom_id.data,
                 ).short,
@@ -35,9 +35,9 @@ def index_view():
     return render_template('index.html', form=form)
 
 
-@app.route('/<short_id>')
-def short_url_view(short_id):
-    url_map = URLMap.get(short_id)
+@app.route('/<short>')
+def short_url_view(short):
+    url_map = URLMap.get(short)
     if url_map is None:
         abort(HTTPStatus.NOT_FOUND)
     return redirect(url_map.original)
