@@ -24,7 +24,7 @@ def create_short_link():
     short = data.get('custom_id')
 
     try:
-        url_map = URLMap.create(original_url, short)
+        url_map = URLMap.create(original_url, short, from_api=True)
     except ValidationError as error:
         raise InvalidAPIUsage(str(error))
     except GenerationError as error:
