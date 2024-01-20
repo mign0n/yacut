@@ -3,9 +3,9 @@ from http import HTTPStatus
 from flask import abort, flash, redirect, render_template, url_for
 from wtforms import ValidationError
 
-from settings import SHORT_URL_VIEW
+from settings import SHORT_VIEW
 from yacut import app
-from yacut.errors_handlers import GenerationError, InvalidAPIUsage
+from yacut.errors_handlers import GenerationError
 from yacut.forms import URLMapForm
 from yacut.models import URLMap
 
@@ -20,7 +20,7 @@ def index_view():
             'index.html',
             form=form,
             short_url=url_for(
-                SHORT_URL_VIEW,
+                SHORT_VIEW,
                 _external=True,
                 short=URLMap.create(
                     form.original_link.data,
@@ -28,10 +28,8 @@ def index_view():
                 ).short,
             ),
         )
-    except ValidationError as error:
+    except (GenerationError, ValidationError) as error:
         flash(str(error))
-    except GenerationError as error:
-        raise InvalidAPIUsage(str(error), HTTPStatus.INTERNAL_SERVER_ERROR)
     return render_template('index.html', form=form)
 
 

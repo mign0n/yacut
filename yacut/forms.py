@@ -1,20 +1,20 @@
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, URLField, ValidationError, validators
 
-from settings import SHORT_ID_PATTERN
+from settings import SHORT_PATTERN
 from yacut import app
-from yacut.models import SHORT_LINK_IS_EXISTS, URLMap
+from yacut.models import SHORT_IS_EXISTS, URLMap
 
 CREATE = 'Создать'
-CUSTOM_SHORT_LINK = 'Ваш вариант короткой ссылки'
-INVALID_SHORT_LINK_NAME = 'Указано недопустимое имя для короткой ссылки'
+CUSTOM_SHORT = 'Ваш вариант короткой ссылки'
+INVALID_SHORT = 'Указано недопустимое имя для короткой ссылки'
 LONG_LINK = 'Длинная ссылка'
 REQUIRED_FIELD = 'Обязательное поле'
 
 
 def validate_unique(form, field):
     if URLMap.get(field.data) is not None:
-        raise ValidationError(SHORT_LINK_IS_EXISTS)
+        raise ValidationError(SHORT_IS_EXISTS)
 
 
 class URLMapForm(FlaskForm):
@@ -27,13 +27,13 @@ class URLMapForm(FlaskForm):
         ],
     )
     custom_id = URLField(
-        CUSTOM_SHORT_LINK,
+        CUSTOM_SHORT,
         validators=[
-            validators.Length(max=app.config['SHORT_ID_MAX_SIZE']),
+            validators.Length(max=app.config['SHORT_MAX_SIZE']),
             validators.Optional(),
             validators.Regexp(
-                SHORT_ID_PATTERN,
-                message=INVALID_SHORT_LINK_NAME,
+                SHORT_PATTERN,
+                message=INVALID_SHORT,
             ),
             validate_unique,
         ],

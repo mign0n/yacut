@@ -9,9 +9,9 @@ ORIGINAL_LINK_PATTERN = (
     r'(?P<path>\/.*?)?'
     r'(?P<query>\?.*)?$'
 )
-SHORT_ID_CHARACTERS = ascii_letters + digits
-SHORT_ID_PATTERN = r'[{}]+'.format(SHORT_ID_CHARACTERS)
-SHORT_URL_VIEW = 'short_url_view'
+SHORT_CHARACTERS = ascii_letters + digits
+SHORT_PATTERN = r'[{}]+'.format(SHORT_CHARACTERS)
+SHORT_VIEW = 'short_url_view'
 
 
 class Config:
@@ -19,8 +19,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'SUP$R-SECR3T-KEY')
 
-    DEFAULT_SHORT_ID_SIZE = 6
+    DEFAULT_SHORT_SIZE = 6
     ORIGINAL_LINK_MAX_SIZE = 2000
-    SHORT_ID_MAX_SIZE = 16
+    SHORT_MAX_SIZE = 16
 
     MAX_ITERATION = 10

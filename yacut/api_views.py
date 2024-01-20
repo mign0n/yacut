@@ -3,12 +3,12 @@ from http import HTTPStatus
 from flask import jsonify, request, url_for
 from wtforms import ValidationError
 
-from settings import SHORT_URL_VIEW
+from settings import SHORT_VIEW
 from yacut import app
 from yacut.errors_handlers import GenerationError, InvalidAPIUsage
 from yacut.models import URLMap
 
-ID_NOT_FOUND = 'Указанный id не найден'
+SHORT_NOT_FOUND = 'Указанный id не найден'
 IS_A_REQUIRED_FIELD = '"url" является обязательным полем!'
 NO_REQUEST_BODY = 'Отсутствует тело запроса'
 
@@ -24,7 +24,7 @@ def create_short_link():
     short = data.get('custom_id')
 
     try:
-        url_map = URLMap.create(original_url, short, from_api=True)
+        url_map = URLMap.create(original_url, short, need_validate=True)
     except ValidationError as error:
         raise InvalidAPIUsage(str(error))
     except GenerationError as error:
@@ -34,7 +34,7 @@ def create_short_link():
             {
                 'url': url_map.original,
                 'short_link': url_for(
-                    SHORT_URL_VIEW,
+                    SHORT_VIEW,
                     _external=True,
                     short=url_map.short,
                 ),
@@ -48,5 +48,5 @@ def create_short_link():
 def get_short_link(short):
     url_map = URLMap.get(short)
     if url_map is None:
-        raise InvalidAPIUsage(ID_NOT_FOUND, HTTPStatus.NOT_FOUND)
+        raise InvalidAPIUsage(SHORT_NOT_FOUND, HTTPStatus.NOT_FOUND)
     return jsonify({'url': url_map.original})
