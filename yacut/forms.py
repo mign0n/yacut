@@ -1,3 +1,5 @@
+import re
+
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, URLField, ValidationError, validators
 
@@ -17,6 +19,11 @@ def validate_unique(form, field):
         raise ValidationError(SHORT_IS_EXISTS)
 
 
+def validate_pattern(form, field):
+    if re.fullmatch(SHORT_PATTERN, field.data) is None:
+        raise ValidationError(INVALID_SHORT)
+
+
 class URLMapForm(FlaskForm):
     original_link = URLField(
         LONG_LINK,
@@ -31,11 +38,8 @@ class URLMapForm(FlaskForm):
         validators=[
             validators.Length(max=app.config['SHORT_MAX_SIZE']),
             validators.Optional(),
-            validators.Regexp(
-                SHORT_PATTERN,
-                message=INVALID_SHORT,
-            ),
             validate_unique,
+            validate_pattern,
         ],
     )
     submit = SubmitField(CREATE)
